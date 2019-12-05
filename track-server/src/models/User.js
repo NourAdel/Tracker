@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcypt = require("bcrypt-nodejs");
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -11,4 +12,39 @@ const userSchema = new mongoose.Schema({
     required: true
   }
 });
+userSchema.pre("save", function(next) {
+  const user = this;
+  if (!user.isModified("password")) {
+    return next();
+  }
+  bcypt.genSalt(10, (err, salt) => {
+    if (err) {
+      return next(err);
+    }
+    bcypt.hash(user.password, salt, null, (err, hash) => {
+      if (err) {
+        return next(err);
+      }
+      user.password = hash;
+      next();
+    });
+  });
+});
+userSchema.methods.comparePassword = function comparePassword(
+  candidatePassword
+) {
+  const user = this;
+  return new Promise((resolve, reject) => {
+    bcypt.compare(candidatePassword, user.password, (err, isMatch) => {
+      if (err) {
+        return reject(err);
+      }
+      if (!isMatch) {
+        return reject(false);
+      }
+      resolve(true);
+    });
+  });
+};
+
 mongoose.model("User", userSchema);
