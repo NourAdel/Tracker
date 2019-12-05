@@ -1,6 +1,14 @@
 const express = require("express");
 const mongoose = require("mongoose");
+
+const bodyParser = require("body-parser");
+require("./models/User");
+const authRouter = require("./routs/authRouts");
+const requireAuth = require("./middlewares/requireAuth");
 const app = express();
+app.use(bodyParser.json());
+app.use(authRouter);
+
 const mongoUri =
   "mongodb+srv://admin:passwordpassword@cluster0-ab55u.mongodb.net/test?retryWrites=true&w=majority";
 mongoose.connect(mongoUri, {
@@ -17,8 +25,8 @@ mongoose.connection.on("error", err => {
   console.log("Error connecting to mongo: ", err);
 });
 
-app.get("/", (req, res) => {
-  res.send("hi there!");
+app.get("/", requireAuth, (req, res) => {
+  res.send(`your email is ${req.user.email}`);
 });
 
 app.listen(3000, () => {
