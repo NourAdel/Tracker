@@ -3,11 +3,14 @@ const mongoose = require("mongoose");
 
 const bodyParser = require("body-parser");
 require("./models/User");
+require("./models/Track");
 const authRouter = require("./routs/authRouts");
+const trackRouts = require("./routs/trackRouts");
 const requireAuth = require("./middlewares/requireAuth");
 const app = express();
 app.use(bodyParser.json());
 app.use(authRouter);
+app.use(trackRouts);
 
 const mongoUri =
   "mongodb+srv://admin:passwordpassword@cluster0-ab55u.mongodb.net/test?retryWrites=true&w=majority";
