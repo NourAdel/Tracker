@@ -1,50 +1,23 @@
-import React, {useState, useContext} from 'react';
-import {View, StyleSheet} from 'react-native';
-import IconE from 'react-native-vector-icons/AntDesign';
-import Iconp from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Button, Text, Input} from 'react-native-elements';
+import React, {useContext} from 'react';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {Text} from 'react-native-elements';
 
-import Spacer from '../components/Spacer';
 import {Context} from '../context/AuthContext';
+import AuthForm from '../components/AuthForm';
 
 const SignupScreen = ({navigation}) => {
   const {state, signup} = useContext(Context);
-  const [email, setEmail] = useState('');
-  const [password, setPasword] = useState('');
 
   return (
     <View style={styles.container}>
-      <Spacer>
-        <Text h3>TRACKER</Text>
-      </Spacer>
-      <Input
-        placeholder="Enter you Emial"
-        value={email}
-        onChangeText={text => setEmail(text)}
-        leftIcon={<IconE name="mail" size={24} color={'black'} />}
-        autoCapitalize="none"
-        autoCorrect={false}
+      <AuthForm
+        errorMessage={state.errorMessage}
+        buttonText="Sign Up"
+        onSumbit={signup}
       />
-      <Spacer />
-      <Input
-        placeholder="Enter you password"
-        value={password}
-        onChangeText={text => setPasword(text)}
-        autoCapitalize="none"
-        autoCorrect={false}
-        secureTextEntry
-        leftIcon={<Iconp name="onepassword" size={24} color={'black'} />}
-      />
-      <Spacer>
-        {state.errorMessage ? (
-          <Text style={styles.errorMessage}>{state.errorMessage}</Text>
-        ) : null}
-        <Button
-          title="Sign Up"
-          type="outline"
-          onPress={() => signup({email, password})}
-        />
-      </Spacer>
+      <TouchableOpacity onPress={() => navigation.navigate('Signin')}>
+        <Text style={styles.link}>Aleardy have an account? Sign In</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -61,11 +34,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 150,
   },
-  errorMessage: {
-    fontSize: 16,
-    color: 'red',
-    marginLeft: 15,
-    
+  link: {
+    color: 'blue',
+    marginTop: 10,
+    marginLeft:15
   },
 });
 
