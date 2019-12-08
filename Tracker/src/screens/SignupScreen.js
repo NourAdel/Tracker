@@ -1,12 +1,14 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {View, StyleSheet} from 'react-native';
 import IconE from 'react-native-vector-icons/AntDesign';
 import Iconp from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Button, Text, Input} from 'react-native-elements';
 
 import Spacer from '../components/Spacer';
+import {Context} from '../context/AuthContext';
 
 const SignupScreen = ({navigation}) => {
+  const {state, signup} = useContext(Context);
   const [email, setEmail] = useState('');
   const [password, setPasword] = useState('');
 
@@ -34,7 +36,14 @@ const SignupScreen = ({navigation}) => {
         leftIcon={<Iconp name="onepassword" size={24} color={'black'} />}
       />
       <Spacer>
-        <Button title="Sign Up" type="outline" />
+        {state.errorMessage ? (
+          <Text style={styles.errorMessage}>{state.errorMessage}</Text>
+        ) : null}
+        <Button
+          title="Sign Up"
+          type="outline"
+          onPress={() => signup({email, password})}
+        />
       </Spacer>
     </View>
   );
@@ -51,6 +60,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     marginBottom: 150,
+  },
+  errorMessage: {
+    fontSize: 16,
+    color: 'red',
+    marginLeft: 15,
+    
   },
 });
 
